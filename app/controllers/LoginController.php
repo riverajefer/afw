@@ -3,7 +3,7 @@
 class LoginController extends \BaseController 
 {
 
-public function loginWithFacebook()
+public function loginWithFacebook($id_selfie = null)
 {
 
     $code = Input::get( 'code' );
@@ -18,10 +18,19 @@ public function loginWithFacebook()
             $id = $me['id'];
             $user = User::where('facebook_id','=', $id )->first();
 
-            if ($user) {
+            if ($user) 
+            {
                 $user = Sentry::findUserByLogin($user->email);
                 Sentry::login($user, false);
-                return Redirect::to('/');
+                if($id_selfie==0)
+                {
+                    return Redirect::to('registro/completar');
+                }
+                else{
+                    return Redirect::to('selfie/'.$id_selfie); 
+                }
+                
+               // return Redirect::to('selfie/galeria');
             }
             else {
                 $user = Sentry::createUser(array(
@@ -35,7 +44,15 @@ public function loginWithFacebook()
                 ));
                 $user = Sentry::findUserByLogin($me['email']);
                 Sentry::login($user, false);
-                return Redirect::to('/');
+               
+                if($id_selfie==0)
+                {
+                    return Redirect::to('registro/completar');
+                }
+                else{
+                    return Redirect::to('selfie/'.$id_selfie); 
+                }
+
             }
     }
     else {

@@ -7,6 +7,13 @@ class SelfieController extends \BaseController {
         return View::make('selfie/subir');
     }
 
+    public function galeriaSelfie() 
+    {
+        $selfies = Selfie::all();
+        //return $selfies;
+        return View::make('selfie/galeria')->with('selfies', $selfies);
+    }
+
     public function viewSelfie($id) 
     {
         
@@ -49,7 +56,7 @@ class SelfieController extends \BaseController {
         $extension = $file->getClientOriginalExtension();
         $foto =  $filename.'.'.$extension;
 
-        Image::make(Input::file('image')->getRealPath())->resize(200, 200)->save('uploads/thumbnail/'.$foto);
+        Image::make(Input::file('image')->getRealPath())->resize(400, 400)->save('uploads/thumbnail/'.$foto);
         $upload_success = Input::file('image')->move($destinationPath, $foto);
 
 

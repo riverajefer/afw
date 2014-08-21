@@ -1,0 +1,7 @@
+
+INSERT INTO `selfie` (`id`, `user_id`, `foto`, `mensaje`, `created_at`, `updated_at`) VALUES
+(1, 1, 'XkkXN07igOgd.jpg', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industria', '2014-08-21 03:45:48', '2014-08-21 03:45:48'),
+(2, 1, 'vXVKKVptn1Pm.jpg', 'Laravel 4 is out! What better way to test it than to install in my computer. I''ll be teaching you ', '2014-08-21 03:50:34', '2014-08-21 03:50:34'),
+(3, 1, 't3PSBYdQKPpq.jpg', 'Todo el año se puede disfrutar de las compras en Colombia. ', '2014-08-21 03:57:23', '2014-08-21 03:57:23'),
+(4, 1, 'YWEErDgEM0pS.jpg', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de', '2014-08-21 03:59:39', '2014-08-21 03:59:39'),
+(5, 1, 'fAIFYo6fNK8a.jpg', 'Holaasasas', '2014-08-21 21:08:03', '2014-08-21 21:08:03');

@@ -11,15 +11,13 @@
 @endif
 
 --}}
-<div class="row" align="center">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<img src="{{asset('images/nofan.png')}}" class="img-responsive">    	
+
+<div class="row" align="center" id="marco">
+	<div class="col-xs-12 col-sm-12 col-md-12" id="terminos">
+		<img src='{{ asset('images/nofan_home.png') }}'class="img-responsive">
+		<br><br>
 	</div>
 </div>
-
-<div class="fb-share-button" data-href="http://localhost/afw/public/"></div>
-
-
 
 @stop
 {{-- Titulo --}}

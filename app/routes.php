@@ -2,15 +2,17 @@
 
 Route::get('/', function()
 {
-	return View::make('index');
+	 if (Sentry::check())
+	 {
+	 	return Redirect::to('selfie/galeria');
+	 }
+	 return Redirect::to('home');
+	 //return View::make('index');
 });
 
 
 /****************** RUTAS, DE ACCIONES , PARA EL CONTROLADOR LOGIN *********************/
-//Route::controller('login', 'LoginController');
-
-
-Route::get('login_face/', 'LoginController@loginWithFacebook');
+Route::get('login_face/{id}', 'LoginController@loginWithFacebook');
 
 
 /****************** Salir **********************/
@@ -18,17 +20,7 @@ Route::get('login_face/', 'LoginController@loginWithFacebook');
 Route::get('logout', function()
 {
 	Sentry::logout();
-	return Redirect::to('login');
-});
-
-/****************** url de pruebas **********************/
-
-Route::get('hola', function()
-{
-	//$id_user     = Sentry::getUser()->id;
-	//$terminado   = User::find($id_user)->RojoPaginas->terminado;
-	//return Response::json(array('name' => 'Steve', 'estado' => $terminado));
-
+	return Redirect::to('home');
 });
 
 
@@ -46,8 +38,92 @@ Route::get('registro', function()
 
 });
 
+/****** Menú Home ******/
+Route::get('home', function()
+{
+	return View::make('home');
+});
+
+
+/****** Terminos  ******/
+Route::get('terminos_y_condiciones', function()
+{
+	return View::make('terminos1');
+});
+
+
+/****** Terminos ******/
+Route::get('terminos', function()
+{
+	return View::make('terminos');
+});
+
+
+/****** ingreso_participantes ******/
+Route::get('ingreso_participantes', function()
+{
+	return View::make('users/ingreso_participantes');
+});
+
+
+/****************** Completar Registro **********************/
+Route::get('registro/completar', array('before' => 'completo', function()
+{
+ 	$usuario = Sentry::getUser();
+	return View::make('users/completar_registro')->with('usuario', $usuario);
+
+}));
+
+
+/****************** Filtro para validar si Completar Registro **********************/
+Route::filter('completo', function()
+{
+
+	$id_user = Sentry::getUser()->id;
+	$user = User::find($id_user);
+	$completo = $user->registro_completo;
+	if($completo)
+	{
+		return Redirect::to('selfie/subir');
+	}
+
+});
+
+
 /****************** Subir **********************/
-Route::get('selfie/subir', 'SelfieController@getSelfie');
+Route::post('registro/completar','RegistroController@Completar');
+
+
+/****************** Subir Selfie**********************/
+//Route::get('selfie/subir', 'SelfieController@getSelfie');
+
+Route::get('selfie/subir', array('before' => 'Autenticado|ya_participo', 'uses' => 'SelfieController@getSelfie'));
+
+
+/******************  Filtro de Autenticación**********************/
+Route::filter('Autenticado', function()
+{
+	 if (!Sentry::check())
+	 {
+	 	return Redirect::to('home')->with('message_error','Primero debes ingresar');
+	 }
+});
+
+/****************** Filtro para validar si Completar Registro **********************/
+Route::filter('ya_participo', function()
+{
+
+	$id_user = Sentry::getUser()->id;
+	$selfie = User::find($id_user)->selfie;
+
+	if(!empty($selfie))
+	{
+		return Redirect::to('selfie/galeria')->with('message_error','Usted ya subio su Selfie');
+	}
+
+});
+
+
 
 //peticiones post, protegemos de ataques csrf
 Route::group(array('before' => 'csrf'), function()
@@ -55,8 +131,20 @@ Route::group(array('before' => 'csrf'), function()
 	Route::post('selfie/subir','SelfieController@postSubir');
 });
 
+/****** Ver Selfie en Detalle ******/
 Route::get('selfie/{id}', 'SelfieController@viewSelfie')->where('id', '[0-9]+');
 
+/****** Galeria de Selfies ******/
+Route::get('selfie/galeria', 'SelfieController@galeriaSelfie');
+
+
+
+
+/****** Menú Home ******/
+Route::get('pruebas', function()
+{
+	return View::make('pruebas');
+});
 
 
 /****** Error 404 ******/
@@ -66,12 +154,3 @@ App::missing(function($exception)
 });
 
 
-
-Route::get('imagen', function()
-{
-
-	$img = Image::make('http://localhost/afw/public/uploads/pNqSx5yFaGRb.jpg');
-	$img->resize(320, 240);
-	return "ImageN:  $img";
-	//$img->save('http://localhost/afw/public/uploads/watermark.png');
-});
